@@ -47,7 +47,6 @@ function App() {
     fetchImageData();
   },[imageId]);
 
-  console.log(albumImages);
     return (
     <div className="App">
       <div className="navbarContainer">
@@ -61,7 +60,10 @@ function App() {
         />: false}
 
         {(showAlbum ==='image')?
-          <ImageListContainer/>:
+          <ImageListContainer albumId={imageId}
+          albumImages={albumImages.images}
+          albumName={albumImages.albumName}
+          />:
           false
         }
 
