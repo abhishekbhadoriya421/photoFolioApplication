@@ -1,15 +1,23 @@
 import styled from './AlbumsList.module.css'
-import { useEffect, useRef, useState} from 'react';
+import { useState, useRef, useEffect} from 'react';
+import {Form} from '../ReuseComponents/Form/Form';
+import ShowData from '../ReuseComponents/ShowData/ShowDataComponent';
 
 // Import database
-import { collection,onSnapshot, addDoc } from "firebase/firestore"; 
+import { collection,addDoc } from "firebase/firestore"; 
 import {db} from '../../firebaseInIt';
 
+function AlbumsListComponent(props){
+    const [showForm,setShowForm] = useState(false);
 
-// Add Form Component
-function Form(){
+    function handleShowForm(){
+        setShowForm(!showForm);
+    }
+
     const [albumName,setAlbumName] = useState("");
     let addAlbumRef = useRef();
+
+    // fetch data from Form
     function handleAddAlbum(e){
         e.preventDefault(); // preventing default reloading behavior of form
         setAlbumName(addAlbumRef.current.value);
@@ -31,49 +39,16 @@ function Form(){
         }
     },[albumName]);
 
-    return(
-        <div className={styled.addAlbumFormContainer}>
-            <p className={styled.AlbumHeading}>Create An Album</p>
-            <form className={styled.addAlbumForm} onSubmit={handleAddAlbum}>
-                <input type="text" name='albumName' ref={addAlbumRef} className={styled.addAlbumInput} placeholder='Enter Album Name' required />
-                <div className={styled.buttons}>
-                    <button className={styled.btn}
-                    style={{color:"white",background:"green"}}
-                    type='submit'
-                    >Create</button>
-                    <button className={styled.btn} style={{color:"white",background:"red"}} type='reset'>Clear</button>
-                </div>
-            </form>
-        </div>
-    )
-}
-
-function AlbumsListComponent(){
-    const [showForm,setShowForm] = useState(false);
-    const [albums,setAlbums] = useState([]);
-
-    function handleShowForm(){
-        setShowForm(!showForm);
-    }
-
-    // Retrieve all Albums from database
-    useEffect(()=>{
-        onSnapshot(collection(db,'album'),(snapShot)=>{
-            const data = snapShot.docs.map((doc)=>{
-                return {
-                    id:doc.id,
-                    ...doc.data()
-                }
-            })
-            console.log(data);
-        })
-    })
-
+    const {albums,showUserImageFunc} = props
     return(<>
         {/* main Album container  */}
         <section className={styled.AlbumsContainer}>
             {/* Form will be display if showForm is True*/}
-                {showForm && <Form/>}
+                {showForm && 
+                <Form formType={"Album"}
+                refEle={addAlbumRef}
+                handleOnSubmit={handleAddAlbum}
+                />}
             {/* Add Album Form Button And Heading */}
             <div className={styled.addAlbumFormBtnAndHeading}>
                 <p className={styled.AlbumHeading}>Your Albums</p>
@@ -84,6 +59,18 @@ function AlbumsListComponent(){
                 }
 
             </div>
+
+            {/* Show Album */}
+            <div className={styled.showAlbums}>
+                {albums.map((ele)=>{
+                    return <ShowData key={ele.id}
+                    id={ele.id}
+                    image={"https://th.bing.com/th/id/R.bbade8c45f3deaae7ea095172a7b1803?rik=NfGzWKcbN3URzw&pid=ImgRaw&r=0"}
+                    content={ele.albumName}
+                    handleShowUserImage={showUserImageFunc}
+                    /> 
+                })}
+            </div>        
         </section>
     </>)
 }

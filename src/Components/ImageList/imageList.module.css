@@ -1,22 +1,22 @@
-.AlbumsContainer{
+.imageListContainer{
     width: 70%;
     margin: auto;
     height: 60vh;
 }
 
-.addAlbumFormBtnAndHeading{
+.addImageBtnAndHeading{
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
 }
 
-.AlbumHeading{
+.ImageHeading{
     font-size: 1.8rem;
     font-weight: bold;
 }
 
 
-.addAlbumBtn{
+.addImageBtn{
     width: 100px;
     height: 40px;
     background-color: rgb(211, 255, 211);
