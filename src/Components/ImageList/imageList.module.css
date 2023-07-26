@@ -48,3 +48,33 @@
     flex-wrap: wrap;
     
 }
+
+/* display Full image */
+
+.leftShift{
+    position: absolute;
+    top: 40%;
+    left: 8%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.Image{
+    position: absolute;
+    top: 15%;
+    left: 17%;
+    width: 65vw;
+    height: 75vh;
+}
+
+.rightShift{
+    position: absolute;
+    top: 40%;
+    left: 85%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+}

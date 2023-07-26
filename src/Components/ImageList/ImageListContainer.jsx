@@ -6,10 +6,30 @@ import styled from './imageList.module.css'
 import { doc, setDoc } from "firebase/firestore"; 
 import {db} from '../../firebaseInIt';
 
+function DisplayFullImage(props){
+    return(<>
+        <p className={styled.leftShift} onClick={()=>props.handleShift('left')}>
+            <img src="https://th.bing.com/th/id/R.dd5dd98799cefacf522ada47c585fc12?rik=VbzDIo5bso5HFw&riu=http%3a%2f%2f4.bp.blogspot.com%2f-DK5LlM1p_CY%2fUasBzdai-UI%2fAAAAAAAAAI0%2f__ZGi_uc62o%2fs1600%2fleft-dlx.png&ehk=%2bV8wvXKQo%2bjmNo%2f4bpZ7GXkUAsYFbyDcQu%2bNHDKrnNo%3d&risl=&pid=ImgRaw&r=0"
+            style={{width:'100%',height:'100%'}}
+            alt="" />
+        </p>
+        <div className={styled.Image}>
+            <img src={props.url} alt="" style={{width:'100%',height:"100%"}}/>
+        </div>
+        <p className={styled.rightShift} onClick={()=>props.handleShift('right')}>
+            <img src="https://th.bing.com/th/id/OIP.2eZDNaO2dCt5KYEhSS_LjAAAAA?pid=ImgDet&w=199&h=153&c=7&dpr=1.3"
+            style={{width:'100%',height:'100%'}}
+            alt="" />
+        </p>
+    </>)
+}
+
 function ImageListContainer(props){
     const [showForm,setShowForm] = useState(false);
     const [newImage,setNewImage] = useState({});
     const [image,setImage] = useState(props.albumImages);
+    const [currentImage,setCurrentImage] = useState('');
+    const [currentIndex,setCurrentIndex] = useState(0);
     function handleShowForm(){
         setShowForm(!showForm);
     }
@@ -53,17 +73,44 @@ function ImageListContainer(props){
         
     },[newImage,image,props.albumId,props.albumName]);
 
+    function shiftImage(type){
+        
+        if(type==='left'){
+            if(currentIndex===0){
+                setCurrentImage(image[image.length-1].imageUrl);
+                setCurrentIndex(image.length-1);
+            }else{
+                setCurrentImage(image[currentIndex-1].imageUrl);
+                setCurrentIndex(currentIndex-1);
+            }
+        }else if(type==='right'){
+            if(currentIndex===image.length-1){
+                setCurrentImage(image[0].imageUrl);
+                setCurrentIndex(0);
+            }else{
+                setCurrentImage(image[currentIndex+1].imageUrl);
+                setCurrentIndex(currentIndex+1);
+            }
+        }
+    }
+
+    function handleShowFullImage(index){
+        let imageUrl = image[index].imageUrl;
+        setCurrentImage(imageUrl);
+        setCurrentIndex(index);
+        console.log(index,imageUrl);
+    }
     return (<>
         <section className={styled.imageListContainer}>
             {/* Form will be display if showForm is True*/}
-                {showForm &&
+                {showForm && !currentImage &&
                 <Form formType={"Image"}
                 refEle={imageUrlRef}
                 refName={imageNameRef}
                 handleOnSubmit={handleAddImage}
                 />}
             {/* Add Image Form Button And Heading */}
-            <div className={styled.addImageBtnAndHeading}>
+            <div className={styled.addImageBtnAndHeading} style={(!currentImage)?{display:'flex'}:{display:'none'}}>
                 <p className={styled.ImageHeading}>Your Images:</p>
                 {(showForm)?
                     <button className={styled.addImageBtn} onClick={handleShowForm}  style={{background:"red",color:"white",border:'0px'}}>Cancel</button>
@@ -71,22 +118,31 @@ function ImageListContainer(props){
                     <button className={styled.addImageBtn} onClick={handleShowForm}>Add Image</button>
                 }
             </div>
+            {(currentImage &&
 
-            {/* Display all Images */}
+            <DisplayFullImage 
+            url={currentImage}
+            handleShift={shiftImage}
+            />)
+
+            ||
             <div className={styled.displayImage}>
                 {(image.length===0)
-                ?
-                    <h1>No Image Found</h1>
-                :
+                    ?
+                        <h1>No Image Found</h1>
+                    :
                     image.map((ele,index)=>{
                         return <ShowImage
                         key={index}
                         imageUrl={ele.imageUrl}
                         imageName={ele.imageName}
+                        index={index}
+                        handleShowFullImage={handleShowFullImage}
                         />
                     })
                 }
             </div>
+            }
         </section>
     </>)
 }
