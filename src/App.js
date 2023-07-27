@@ -13,6 +13,7 @@ function App() {
   const [albums,setAlbums] = useState([]);
   const [imageId,setImageId] = useState(false);
   const [albumImages,setAlbumImages] = useState("");
+
       // Retrieve all Albums from database
   useEffect(()=>{
     onSnapshot(collection(db,'album'),(snapShot)=>{
@@ -47,6 +48,13 @@ function App() {
     fetchImageData();
   },[imageId]);
 
+  function handleGoBack(){
+    setShowAlbum('album');
+    setImageId(false)
+    setAlbumImages("");
+
+  }
+
     return (
     <div className="App">
       <div className="navbarContainer">
@@ -63,6 +71,7 @@ function App() {
           <ImageListContainer albumId={imageId}
           albumImages={albumImages.images}
           albumName={albumImages.albumName}
+          handleGoBack={handleGoBack}
           />:
           false
         }

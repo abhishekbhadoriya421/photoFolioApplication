@@ -2,6 +2,16 @@
     width: 70%;
     margin: auto;
     height: 60vh;
+    position: relative;
+}
+
+.goBackBtn{
+    position: absolute;
+    top: 0%;
+    left: -15%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
 }
 
 .addImageBtnAndHeading{
@@ -54,7 +64,7 @@
 .leftShift{
     position: absolute;
     top: 40%;
-    left: 8%;
+    left: -12%;
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -63,8 +73,8 @@
 
 .Image{
     position: absolute;
-    top: 15%;
-    left: 17%;
+    top: 0%;
+    left: 3%;
     width: 65vw;
     height: 75vh;
 }
@@ -72,9 +82,31 @@
 .rightShift{
     position: absolute;
     top: 40%;
-    left: 85%;
+    left: 100%;
     width: 100px;
     height: 100px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.closeImageButton{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 2%;
+    left: -12%;
+    cursor: pointer;
+}
+
+.popUpMessageContainer{
+    position: absolute;
+    width: 80px;
+    padding: 5px 0px;
+    box-shadow: 0px 0px 3px 0px black;
+    font-weight: bolder;
+    text-align: center;
+    top: 13%;
+    left: -15%;
+    background-color: rgb(233 233 233);
+    z-index: 3;
 }
