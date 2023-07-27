@@ -1,35 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { Form } from "../ReuseComponents/Form/Form";
-import { ShowImage } from "./showImage/ShowImageComponent";
+import { ShowImage } from "./showImages/ShowImageComponent";
 import styled from './imageList.module.css'
-
+import DisplayFullImage from "./DisplayImage/DisplayFullImage";
 import { doc, setDoc } from "firebase/firestore"; 
 import {db} from '../../firebaseInIt';
-
-function DisplayFullImage(props){
-    return(<>
-        <p className={styled.leftShift} onClick={()=>props.handleShift('left')}>
-            <img src="https://th.bing.com/th/id/R.dd5dd98799cefacf522ada47c585fc12?rik=VbzDIo5bso5HFw&riu=http%3a%2f%2f4.bp.blogspot.com%2f-DK5LlM1p_CY%2fUasBzdai-UI%2fAAAAAAAAAI0%2f__ZGi_uc62o%2fs1600%2fleft-dlx.png&ehk=%2bV8wvXKQo%2bjmNo%2f4bpZ7GXkUAsYFbyDcQu%2bNHDKrnNo%3d&risl=&pid=ImgRaw&r=0"
-            style={{width:'100%',height:'100%'}}
-            alt="" />
-        </p>
-        <div className={styled.Image}>
-            <img src={props.url} alt="" style={{width:'100%',height:"100%"}}/>
-        </div>
-        <p className={styled.rightShift} onClick={()=>props.handleShift('right')}>
-            <img src="https://th.bing.com/th/id/OIP.2eZDNaO2dCt5KYEhSS_LjAAAAA?pid=ImgDet&w=199&h=153&c=7&dpr=1.3"
-            style={{width:'100%',height:'100%'}}
-            alt="" />
-        </p>
-    </>)
-}
 
 function ImageListContainer(props){
     const [showForm,setShowForm] = useState(false);
     const [newImage,setNewImage] = useState({});
     const [image,setImage] = useState(props.albumImages);
-    const [currentImage,setCurrentImage] = useState('');
-    const [currentIndex,setCurrentIndex] = useState(0);
+    const [currentIndex,setCurrentIndex] = useState(null);
+    const [displayImage,setDisplayImage] = useState(false);
     const [popUpMessage,setPopUpMessage] = useState('');
     const [showPopUp,setShowPopUp] = useState(false);
     function handleShowForm(){
@@ -75,38 +57,16 @@ function ImageListContainer(props){
         
     },[newImage,image,props.albumId,props.albumName]);
 
-    function shiftImage(type){
-        
-        if(type==='left'){
-            if(currentIndex===0){
-                setCurrentImage(image[image.length-1].imageUrl);
-                setCurrentIndex(image.length-1);
-            }else{
-                setCurrentImage(image[currentIndex-1].imageUrl);
-                setCurrentIndex(currentIndex-1);
-            }
-        }else if(type==='right'){
-            if(currentIndex===image.length-1){
-                setCurrentImage(image[0].imageUrl);
-                setCurrentIndex(0);
-            }else{
-                setCurrentImage(image[currentIndex+1].imageUrl);
-                setCurrentIndex(currentIndex+1);
-            }
-        }
-    }
-
     // onclick on button Show the full length of image
     function handleShowFullImage(index){
-        let imageUrl = image[index].imageUrl;
-        setCurrentImage(imageUrl);
         setCurrentIndex(index);
+        setDisplayImage(true)
     }
 
     // Close the Displayed image
     function handleCloseImage(){
-        setCurrentImage("");
-        setCurrentIndex(0);
+        setCurrentIndex(null);
+        setDisplayImage(false);
     }
 
     // when mouse is Entering showing a pop up to notify user
@@ -116,7 +76,6 @@ function ImageListContainer(props){
 
     // when mouse leave
     function handleOnMouseLeave(){
-        console.log('leave');
         setPopUpMessage("");
         setShowPopUp(false);
     }
@@ -129,7 +88,6 @@ function ImageListContainer(props){
         }
         // The cleanup function for this effect.
         return () => {
-            console.log('Component will unmount');
             clearTimeout(timeOutId)
         };
     },[popUpMessage])
@@ -138,7 +96,8 @@ function ImageListContainer(props){
         <section className={styled.imageListContainer}>
             {(showPopUp)?<p className={styled.popUpMessageContainer}>{popUpMessage}</p>:false}
             {/* If Current image is empty only then show the backward button else show the image close button */}
-           {(!currentImage)?
+           
+           {(!displayImage)?
             // Go Back
            <p className={styled.goBackBtn}
             onClick={props.handleGoBack}
@@ -159,8 +118,10 @@ function ImageListContainer(props){
                 alt="closeImage" />
             </p>
             } 
+
+
             {/* Form will be display if showForm is True*/}
-                {showForm && !currentImage &&
+                {showForm && !displayImage &&
                 <Form formType={"Image"}
                 refEle={imageUrlRef}
                 refName={imageNameRef}
@@ -168,7 +129,7 @@ function ImageListContainer(props){
                 />}
             {/* Add Image Form Button And Heading */}
             <div className={styled.addImageBtnAndHeading}
-            style={(!currentImage)?
+            style={(!displayImage)?
             {display:'flex'}:
             {display:'none'}
             }>
@@ -181,10 +142,10 @@ function ImageListContainer(props){
             </div>
 
 
-            {(currentImage &&
+            {(displayImage &&
             <DisplayFullImage 
-            url={currentImage}
-            handleShift={shiftImage}
+            imageIndex={currentIndex}
+            images={image}
             />)
             ||
             <div className={styled.displayImage}>
@@ -203,7 +164,7 @@ function ImageListContainer(props){
                     })
                 }
             </div>
-            }
+            } 
         </section>
     </>)
 }

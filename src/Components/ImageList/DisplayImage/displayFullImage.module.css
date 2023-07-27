@@ -1,0 +1,70 @@
+/* display Image */
+
+.displayImage{
+    display: flex;
+    justify-content: space-between;
+    margin-top:'50px';
+    flex-wrap: wrap;
+    
+}
+
+/* display Full image */
+
+.leftShift{
+    position: absolute;
+    top: 40%;
+    left: -12%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.imageContainer{
+    position: relative;
+    width: 65vw;
+    height: 75vh;
+    box-shadow: 0px 0px 4px 0px black;
+    background-color: rgb(239, 239, 239);
+    overflow: hidden;
+}
+
+.ImageShow{
+    position: absolute;
+    top: 2%;
+    width: 95%;
+    height: 95%;
+    transition: all 1s ease-in-out;
+}
+
+.rightShift{
+    position: absolute;
+    top: 40%;
+    left: 100%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.closeImageButton{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 2%;
+    left: -12%;
+    cursor: pointer;
+}
+
+.popUpMessageContainer{
+    position: absolute;
+    width: 80px;
+    padding: 5px 0px;
+    box-shadow: 0px 0px 3px 0px black;
+    font-weight: bolder;
+    text-align: center;
+    top: 13%;
+    left: -15%;
+    background-color: rgb(233 233 233);
+    z-index: 3;
+}
